@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;8;0;0;0
-UnitCount=4
+UnitCount=5
 
 [VersionInfo]
 Major=1
@@ -50,17 +50,17 @@ ProductVersion=1.0.0.0
 AutoIncBuildNr=0
 SyncProduct=1
 
-[Unit1]
-FileName=Untitled1.cpp
+[Unit3]
+FileName=tree.cpp
 CompileCpp=1
 Folder=
-Compile=0
-Link=0
+Compile=1
+Link=1
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=$(CPP) -c Untitled1.cpp -o Untitled1.o $(CXXFLAGS)
+BuildCmd=$(CPP) -c tree.cpp -o tree.o $(CXXFLAGS)
 
-[Unit2]
+[Unit1]
 FileName=piramida.cpp
 CompileCpp=1
 Folder=
@@ -70,23 +70,33 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=$(CPP) -c piramida.cpp -o piramida.o $(CXXFLAGS)
 
-[Unit3]
-FileName=gabungan.cpp
+[Unit2]
+FileName=coba.cpp
 CompileCpp=1
 Folder=
 Compile=0
 Link=0
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=$(CPP) -c gabungan.cpp -o gabungan.o $(CXXFLAGS)
+BuildCmd=$(CPP) -c coba.cpp -o coba.o $(CXXFLAGS)
 
 [Unit4]
-FileName=coba.cpp
+FileName=mencoba.cpp
 CompileCpp=1
 Folder=
-Compile=1
-Link=1
+Compile=0
+Link=0
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=$(CPP) -c coba.cpp -o coba.o $(CXXFLAGS)
+BuildCmd=$(CPP) -c mencoba.cpp -o mencoba.o $(CXXFLAGS)
+
+[Unit5]
+FileName=baru.cpp
+CompileCpp=1
+Folder=
+Compile=0
+Link=0
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=$(CPP) -c baru.cpp -o baru.o $(CXXFLAGS)
 

@@ -10,7 +10,7 @@ int lastMouseX, lastMouseY; // Posisi terakhir mouse
 bool isDragging = false;    // Status apakah mouse sedang di-drag
 void drawSingleBlock();
 
-void drawBox(float width, float height, float depth) {
+void drawBox(float width, float height, float depth) { 
     glBegin(GL_QUADS);
     glColor3f(1.0f, 0.0f, 0.0f);  // Warna merah
 
@@ -37,7 +37,6 @@ void drawBox(float width, float height, float depth) {
     glVertex3f(width / 2, 0, depth / 2);
     glVertex3f(width / 2, height, depth / 2);
     glVertex3f(width / 2, height, -depth / 2);
-
     
     glColor3f(0.5f, 0.0f, 0.0f);  // Warna merah
 	// Atas
@@ -55,7 +54,8 @@ void drawBox(float width, float height, float depth) {
     glEnd();
 }
 
-void drawPyramid() {
+// Membuat Piramida
+void drawPyramid() { 
     float baseWidth = 2.0f;   // Lebar dasar
     float baseDepth = 2.0f;   // Kedalaman dasar
     float height = 0.2f;      // Tinggi setiap tingkat
@@ -80,7 +80,7 @@ void drawPyramid() {
     }
     
     //depan
-    glPushMatrix();
+	glPushMatrix();
     glTranslatef(0.0f, 0.80f, 0.35f);
     glRotatef(70.0f, 1.0f, 0.0f, 0.0f);
     drawSingleBlock();
@@ -107,10 +107,12 @@ void drawPyramid() {
     glPopMatrix();
 }
 
+// membuat balok miring di tengah tembok piramida
 void drawSingleBlock() {
     float blockWidth = 0.2f;  // Lebar balok
     float blockHeight = 0.3f; // Tinggi balok
     float blockDepth = 2.2f;  // Kedalaman balok
+     
 
     // Posisikan balok di tempat tangga sebelumnya
     glTranslatef(0.0f, blockHeight / 2.0f, 0.0f);
@@ -119,6 +121,24 @@ void drawSingleBlock() {
     drawBox(blockWidth, blockHeight, blockDepth);    
 }
 
+void drawTree() {
+    // Gambar batang pohon
+    glPushMatrix();
+    glColor3f(0.4f, 0.2f, 0.0f);  // Warna coklat untuk batang
+    glTranslatef(0.0f, 0.1f, 0.0f);  // Posisikan batang di atas tanah
+    glScalef(0.1f, 0.5f, 0.1f);  // Ukuran batang
+    drawBox(0.0f, 1.0f, 0.0f);  // Gambar batang pohon
+    glPopMatrix();
+
+    // Gambar daun pohon (bola hijau)
+    glPushMatrix();
+    glColor3f(0.0f, 0.8f, 0.0f);  // Warna hijau untuk daun
+    glTranslatef(0.0f, 0.5f, 0.0f);  // Posisi daun di atas batang
+    glutSolidSphere(0.4, 10, 10);  // Gambar bola daun
+    glPopMatrix();
+}
+
+// Membuat alas piramida
 void drawPyramidBase(float width, float depth) {
     glBegin(GL_QUADS);
     glColor3f(0.0f, 0.5f, 0.0f);  // Warna hijau untuk alas piramida
@@ -130,7 +150,29 @@ void drawPyramidBase(float width, float depth) {
     glVertex3f(-width / 2, -0.1f, -depth / 2); // Titik 4
 
     glEnd();
+    
+     // Gambar pohon di setiap sisi alas piramida
+    glPushMatrix();
+    glTranslatef(width / 2 - 1.0f, -0.1f, depth / 2 - 1.0f);  // Posisi pohon di sisi kanan depan
+    drawTree();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-width / 2 + 1.0f, -0.1f, depth / 2 - 1.0f);  // Posisi pohon di sisi kiri depan
+    drawTree();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(width / 2 - 1.0f, -0.1f, -depth / 2 + 1.0f);  // Posisi pohon di sisi kanan belakang
+    drawTree();
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-width / 2 + 1.0f, -0.1f, -depth / 2 + 1.0f);  // Posisi pohon di sisi kiri belakang
+    drawTree();
+    glPopMatrix();
 }
+
 
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
@@ -151,8 +193,8 @@ void motion(int x, int y) {
         int dy = y - lastMouseY;
 
         // Perbarui sudut rotasi berdasarkan pergerakan mouse
-        rotateX += dy * 0.2f; // Sensitivitas rotasi pada sumbu X
-        rotateY += dx * 0.2f; // Sensitivitas rotasi pada sumbu Y
+        rotateX += dy * 0.6f; // Sensitivitas rotasi pada sumbu X
+        rotateY += dx * 0.6f; // Sensitivitas rotasi pada sumbu Y
 
         // Simpan posisi terakhir mouse
         lastMouseX = x;
@@ -177,13 +219,10 @@ void display() {
     
    
 	// Gambar alas piramida lebih besar dari piramida
-    drawPyramidBase(3.0f, 3.0f);  
+    drawPyramidBase(5.0f, 5.0f);  
     
     // Gambar piramida
     drawPyramid();
-
-   
-   
 
     glutSwapBuffers();
 }
@@ -191,7 +230,7 @@ void display() {
 
 void init() {
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+    glClearColor(0.5, 0.7, 1.0, 1.0); // Warna biru langit
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(45.0, 1.33, 0.1, 100.0);
