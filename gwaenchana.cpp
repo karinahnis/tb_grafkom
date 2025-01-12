@@ -2,7 +2,6 @@
 #include <math.h>
 #include <cstdlib> 
 #include <ctime>   
-#define PI 3.14159
 
 // Camera position and orientation
 float camX = -3.0f, camY = 3.5f, camZ = -5.5f;

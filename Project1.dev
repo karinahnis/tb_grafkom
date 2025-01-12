@@ -81,12 +81,12 @@ OverrideBuildCmd=0
 BuildCmd=$(CPP) -c baru.cpp -o baru.o $(CXXFLAGS)
 
 [Unit1]
-FileName=tree.cpp
+FileName=gwaenchana.cpp
 CompileCpp=1
 Folder=
 Compile=1
 Link=1
 Priority=1000
 OverrideBuildCmd=0
-BuildCmd=$(CPP) -c tree.cpp -o tree.o $(CXXFLAGS)
+BuildCmd=
 
