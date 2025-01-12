@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;8;0;0;0
-UnitCount=3
+UnitCount=1
 
 [VersionInfo]
 Major=1
@@ -49,16 +49,6 @@ ProductName=
 ProductVersion=1.0.0.0
 AutoIncBuildNr=0
 SyncProduct=1
-
-[Unit1]
-FileName=piramida.cpp
-CompileCpp=1
-Folder=
-Compile=0
-Link=0
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CPP) -c piramida.cpp -o piramida.o $(CXXFLAGS)
 
 [Unit4]
 FileName=mencoba.cpp
@@ -80,16 +70,6 @@ Priority=1000
 OverrideBuildCmd=0
 BuildCmd=$(CPP) -c baru.cpp -o baru.o $(CXXFLAGS)
 
-[Unit2]
-FileName=tree.cpp
-CompileCpp=1
-Folder=
-Compile=1
-Link=1
-Priority=1000
-OverrideBuildCmd=0
-BuildCmd=$(CPP) -c tree.cpp -o tree.o $(CXXFLAGS)
-
 [Unit3]
 FileName=baru.cpp
 CompileCpp=1
@@ -99,4 +79,14 @@ Link=0
 Priority=1000
 OverrideBuildCmd=0
 BuildCmd=$(CPP) -c baru.cpp -o baru.o $(CXXFLAGS)
+
+[Unit1]
+FileName=tree.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=$(CPP) -c tree.cpp -o tree.o $(CXXFLAGS)
 

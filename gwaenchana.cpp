@@ -218,7 +218,7 @@ void lantai(){
 	glPushMatrix();
 	glEnable(GL_DEPTH_TEST);
 	glColor3f(0.0f, 0.5f, 0.0f); 
-	glTranslated(0,-5,0);
+	glTranslated(0,-1.0,0);
 	glScaled(1000, 0.5, 1000);
 	glutSolidSphere(1,30,30);
 	glPopMatrix();
