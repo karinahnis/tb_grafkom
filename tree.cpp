@@ -1,14 +1,17 @@
 #include <GL/glut.h>
 #include <math.h>
+#include <cstdlib> 
+#include <ctime>   
+#define PI 3.14159
 
 // Camera position and orientation
-float camX = 2.3f, camY = 4.0f, camZ = 4.7f;
-float yaw = -90.0f, pitch = 0.0f;
+float camX = -3.0f, camY = 3.5f, camZ = -5.5f;
+float yaw = 28.0f, pitch = -40.0f;
 float lastX = 400, lastY = 300;
 bool firstMouse = true;
 
 // Camera direction
-float dirX = 0.0f, dirY = 0.0f, dirZ = -1.0f;
+float dirX = 0.0f, dirY = 0.0f, dirZ = 0.0f;
 
 int windowWidth = 800;
 int windowHeight = 600;
@@ -26,6 +29,41 @@ float rotateX = 0.0f; // Rotasi pada sumbu X
 float rotateY = 0.0f; // Rotasi pada sumbu Y
 float cloudPosition = -10.0f;
 void  drawSingleBlock();
+
+bool showAxis = false;
+void hiddenCarte();
+
+void drawCoordinate() {
+    if (!showAxis) return;
+    glLineWidth(2.0f);
+    
+    // Sumbu X (Merah)
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_LINES);
+    glVertex3f(-10000.0f, 0.0f, 0.0f);
+    glVertex3f(10000.0f, 0.0f, 0.0f);
+    glEnd();
+    
+    // Sumbu Y (Hijau)
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, -10000.0f, 0.0f);
+    glVertex3f(0.0f, 10000.0f, 0.0f);
+    glEnd();
+    
+    // Sumbu Z (Biru)
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glBegin(GL_LINES);
+    glVertex3f(0.0f, 0.0f, -10000.0f);
+    glVertex3f(0.0f, 0.0f, 10000.0f);
+    glEnd();
+}
+
+// variabel untuk posisi matahari
+// posisi awal matahari di bawah layar
+float sunPositionY = -1.0f;
+
+float scale = 1.0f;
 
 void toggleFullscreen() {
     isFullscreen = !isFullscreen;
@@ -47,21 +85,22 @@ void toggleFullscreen() {
 
 void init() {
     glEnable(GL_DEPTH_TEST);
-     glClearColor(0.5, 0.7, 1.0, 1.0); // Warna langit
-   
+    glEnable(GL_COLOR_MATERIAL);
     glutSetCursor(GLUT_CURSOR_NONE);
-    glutFullScreen();
-    isFullscreen = true;
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
     
+    glClearColor(0.5, 0.7, 1.0, 1.0); // Warna langit
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, 1.33, 0.1, 100.0);
+    gluPerspective(45.0, 1.33, 0.1, 10000.0);
     glMatrixMode(GL_MODELVIEW);
 }
 
+// Membuat Objek Piramida Oleh Karina
 void drawBox(float width, float height, float depth) { 
     glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.0f, 0.0f);  // Warna merah
+    glColor3ub(204, 200, 197);  
 
     // Depan  
     glVertex3f(-width / 2, 0, depth / 2);
@@ -87,7 +126,7 @@ void drawBox(float width, float height, float depth) {
     glVertex3f(width / 2, height, depth / 2);
     glVertex3f(width / 2, height, -depth / 2);
     
-    glColor3f(0.5f, 0.0f, 0.0f);  // Warna merah
+    glColor3f(0.6f, 0.4f, 0.2);  // Warna merah
 	// Atas
     glVertex3f(-width / 2, height, -depth / 2);
     glVertex3f(width / 2, height, -depth / 2);
@@ -103,14 +142,16 @@ void drawBox(float width, float height, float depth) {
     glEnd();
 }
 
-// Membuat Piramida
-void drawPyramid() { 
+void drawPyramid(float scale) { 
     float baseWidth = 2.0f;   // Lebar dasar
     float baseDepth = 2.0f;   // Kedalaman dasar
     float height = 0.2f;      // Tinggi setiap tingkat
     float shrinkFactor = 0.9f; // Pengurangan ukuran untuk setiap tingkat
     int levels = 10;          // Jumlah tingkatan
-
+	
+	
+	glPushMatrix();
+	glScalef(scale,scale,scale);
     for (int i = 0; i < levels; i++) {
         glPushMatrix();
 
@@ -120,7 +161,6 @@ void drawPyramid() {
         // Gambar kotak dengan ukuran yang sesuai
         drawBox(baseWidth, height, baseDepth);
        
-
         // Kurangi ukuran dasar untuk tingkat berikutnya
         baseWidth *= shrinkFactor;
         baseDepth *= shrinkFactor;
@@ -135,24 +175,29 @@ void drawPyramid() {
     drawSingleBlock();
     glPopMatrix();
     
+    // Belakang
     glPushMatrix();
-    glTranslatef(0.0f, 0.80f, -0.35f); // Belakang
+    glTranslatef(0.0f, 0.80f, -0.35f); 
     glRotatef(-70.0f, 1.0f, 0.0f, 0.0f);
     drawSingleBlock();
     glPopMatrix();
-
+	
+	// Kiri
     glPushMatrix();
-    glTranslatef(0.35f, 0.80f, 0.0f); // Kiri
+    glTranslatef(0.35f, 0.80f, 0.0f); 
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(70.0f, 1.0f, 0.0f, 0.0f);
     drawSingleBlock();
     glPopMatrix();
 
+	// Kanan
     glPushMatrix();
-    glTranslatef(-0.35f, 0.80f, 0.0f); // Kanan
+    glTranslatef(-0.35f, 0.80f, 0.0f); 
     glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(70.0f, 1.0f, 0.0f, 0.0f);
     drawSingleBlock();
+    glPopMatrix();
+    
     glPopMatrix();
 }
 
@@ -162,7 +207,6 @@ void drawSingleBlock() {
     float blockHeight = 0.3f; // Tinggi balok
     float blockDepth = 2.2f;  // Kedalaman balok
      
-
     // Posisikan balok di tempat tangga sebelumnya
     glTranslatef(0.0f, blockHeight / 2.0f, 0.0f);
 
@@ -170,111 +214,134 @@ void drawSingleBlock() {
     drawBox(blockWidth, blockHeight, blockDepth);    
 }
 
-// Membuat alas piramida
-void drawPyramidBase(float width, float depth) {
-    glBegin(GL_QUADS);
-    glColor3f(0.0f, 0.5f, 0.0f);  // Warna hijau untuk alas piramida
-
-    // Gambar alas piramida (persegi panjang)
-    glVertex3f(-width / 2, -0.1f, depth / 2);  // Titik 1
-    glVertex3f(width / 2, -0.1f, depth / 2);   // Titik 2
-    glVertex3f(width / 2, -0.1f, -depth / 2);  // Titik 3
-    glVertex3f(-width / 2, -0.1f, -depth / 2); // Titik 4
-
-    glEnd();
+void lantai(){
+	glPushMatrix();
+	glEnable(GL_DEPTH_TEST);
+	glColor3f(0.0f, 0.5f, 0.0f); 
+	glTranslated(0,-5,0);
+	glScaled(1000, 0.5, 1000);
+	glutSolidSphere(1,30,30);
+	glPopMatrix();
 }
 
-void awan(void){
-glPushMatrix(); 
-glColor3ub(153, 223, 255);
-glutSolidSphere(10, 50, 50);
-glPopMatrix();
-glPushMatrix();
-glTranslatef(10,0,1);
-glutSolidSphere(5, 50, 50);
-glPopMatrix();   
-glPushMatrix();
-glTranslatef(-2,6,-2);
-glutSolidSphere(7, 50, 50);
-glPopMatrix();   
-glPushMatrix();
-glTranslatef(-10,-3,0);
-glutSolidSphere(7, 50, 50);
-glPopMatrix();  
-glPushMatrix();
-glTranslatef(6,-2,2);
-glutSolidSphere(7, 50, 50);
-glPopMatrix();      
+// Membuat Matahari oleh Rivaldi
+// Menambahkan pengaruh matahari terhadap pencahayaan
+void updateLightingBasedOnSunPosition() {
+    GLfloat lightPosition[] = {5.0f, sunPositionY, 0.0f, 1.0f};  // Posisi cahaya mengikuti matahari
+    GLfloat lightIntensity = sunPositionY / 5.0f; // Intensitas cahaya bergantung pada posisi matahari
 
-glPushMatrix();
-glTranslatef(100,100,-100);  
-glScalef(1.8, 1.0, 1.0);
-awan();
-glPopMatrix();
+    // Atur intensitas cahaya sesuai dengan ketinggian matahari
+    GLfloat lightDiffuse[] = {lightIntensity, lightIntensity, 0.0f, 1.0f};  // Efek keemasan untuk matahari
+    GLfloat lightSpecular[] = {lightIntensity, lightIntensity, 1.0f}; // Warna spekular lebih terang
+    GLfloat lightAmbient[] = {lightIntensity * 0.2f, lightIntensity * 0.2f, lightIntensity * 0.2f, 1.0f};  // Efek reduksi cahaya saat matahari di bawah
 
-glPushMatrix();
-glTranslatef(90,90,-95);  
-glScalef(1.8, 1.0, 1.0);
-awan();
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(120,95,-95);  
-glScalef(1.8, 1.0, 1.0);
-awan();
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(-100,120,-100);  
-glScalef(1.8, 1.0, 1.0);
-awan();
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(-90,110,-95);  
-glScalef(1.8, 1.0, 1.0);
-awan();
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(-120,115,-95);  
-glScalef(1.8, 1.0, 1.0);
-awan();
-glPopMatrix();
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);  // Posisi cahaya
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, lightDiffuse);    // Intensitas cahaya difus
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpecular);  // Intensitas cahaya spekular
+    glLightfv(GL_LIGHT0, GL_AMBIENT, lightAmbient);    // Cahaya ambient
 }
 
+// Memepengaruhi posisi matahari
+void updateSunPosition(int value) {
+	if (sunPositionY < 5.0f) {
+		// Gerakan matahari ke atas
+		sunPositionY += 0.01f; 
+	}
+	
+	updateLightingBasedOnSunPosition();
+	
+	glutTimerFunc(16, updateSunPosition, 0);
+}
+
+// Mmebuat Matahari 
+void drawSun() {
+	glPushMatrix();
+	glDisable(GL_LIGHTING); // Nonaktifkan pencahayaan agar matahari bersinar
+	glTranslatef(2.2f, 1.5f, 3.0f);
+	glColor3f(1.0, 1.0, 0.0);
+	if (sunPositionY > 0.5) {
+		glTranslatef(0.0f, sunPositionY, 0.0f);
+		glutSolidSphere(0.5, 20, 20);
+	} else if (sunPositionY < 0.0f) {
+		sunPositionY = 0.0f;
+	}
+	glEnable(GL_LIGHTING); // Aktifkan kembali pencahayaan 
+	glPopMatrix();	
+} 
+
+
+// Mmebuat Pohon oleh Wildan
+void drawTree(float x, float y, float z) {
+    // Batang pohon
+    glPushMatrix();
+    glTranslatef(x, y, z);  // Posisi pohon
+    glColor3f(0.5f, 0.25f, 0.1f);  // Warna batang pohon (coklat)
+    
+    // Rotasi batang agar tegak lurus
+    glRotatef(90, 1.0f, 0.0f, 0.0f);  // Rotasi 90 derajat di sumbu X untuk membuat batang tegak
+    
+    GLUquadric *quadratic = gluNewQuadric();
+    gluCylinder(quadratic, 0.1f, 0.1f, 1.0f, 32, 32);  // Membuat silinder untuk batang pohon
+    glPopMatrix();
+
+    // Daun pohon (bola hijau)
+    glPushMatrix();
+    glTranslatef(x, y + 0.0f, z);  // Posisikan bola daun di atas batang pohon
+    glColor3f(0.0f, 1.0f, 0.0f);  // Warna daun pohon (hijau)
+    glutSolidSphere(0.5f, 20, 20);  // Membuat bola sebagai daun pohon
+    glPopMatrix();
+}
+
+void drawForest() {
+    // Posisi pohon-pohon yang berbeda
+    drawTree(10.0f, 1.0f, 2.0f);  // Pohon pertama
+    drawTree(5.0f, 2.0f, 2.0f);
+    drawTree(3.0f, 3.0f, 2.0f);
+    drawTree(-1.0f, 3.0f, 3.0f);
+    drawTree(-2.0f, 2.0f, 3.0f);
+    drawTree(-3.0f, 1.0f, 3.0f);
+    drawTree(5.0f, 1.0f, 3.0f);  
+}
+
+ 
 void reshape(int w, int h) {
      windowWidth = w;
-     windowHeight = h;
-     glViewport(0, 0, w, h);
-     glMatrixMode(GL_PROJECTION);
-     glLoadIdentity();
-     gluPerspective(45.0f, (float)w / h, 0.1f, 100.0f);
-     glMatrixMode(GL_MODELVIEW);
+     windowHeight = h;       
+     glViewport(0, 0, w, h);  
 }
 
 void display() {
-     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-     glLoadIdentity();
-
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(70.0f, windowWidth / windowHeight, 0.1f, 10000000.0f);
     gluLookAt(camX, camY, camZ,
               camX + dirX, camY + dirY, camZ + dirZ,
               0.0f, 1.0f, 0.0f);
+    glMatrixMode(GL_MODELVIEW);
 
     // Terapkan rotasi berdasarkan input mouse
     glRotatef(rotateX, 1.0f, 0.0f, 0.0f); // Rotasi pada sumbu X
     glRotatef(rotateY, 0.0f, 1.0f, 0.0f); // Rotasi pada sumbu Y
-
-    // Gambar alas piramida lebih besar dari piramida
-    drawPyramidBase(3.0f, 3.0f); 
-	
-	// awan
-	awan();  
     
-    // Gambar piramida
-    drawPyramid();
+	
+	drawCoordinate();
+	
+    // Gambar alas piramida lebih besar dari piramida
+	lantai();
+    
+    // matahari 
+    drawSun();
+                      
+    // piramida
+    drawPyramid(1.0f);
+    
+	// Pohon
+    drawForest();
+    
+glPopMatrix();	    
+glutSwapBuffers();
 
-	glutSwapBuffers();
 }
 
 void keyboard(unsigned char key, int x, int y) {
@@ -300,6 +367,9 @@ void keyboard(unsigned char key, int x, int y) {
         case 'f': // Tombol F untuk toggle fullscreen
             toggleFullscreen();
             break;
+        case 'c':
+        	showAxis = !showAxis;
+        	break;
         case 27:  // ESC key
             if (isFullscreen) {
                 toggleFullscreen(); // Keluar dari fullscreen dulu
@@ -309,6 +379,12 @@ void keyboard(unsigned char key, int x, int y) {
             break;
     }
     glutPostRedisplay();
+}
+
+void hiddenCarte() {
+	if (showAxis) {
+		void drawCoordinate();
+	}
 }
 
 void mouseMove(int x, int y) {
@@ -351,6 +427,9 @@ int main(int argc, char** argv) {
     
     init();
     
+    // Mulai timer untuk update posisi matahari
+    glutTimerFunc(25, updateSunPosition, 0);
+   	 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc(keyboard);

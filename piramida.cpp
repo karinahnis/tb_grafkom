@@ -107,17 +107,6 @@ void drawPyramid() {
     glPopMatrix();
 }
 
-void drawSingleBlock() {
-    float blockWidth = 0.2f;  // Lebar balok
-    float blockHeight = 0.3f; // Tinggi balok
-    float blockDepth = 2.2f;  // Kedalaman balok
-
-    // Posisikan balok di tempat tangga sebelumnya
-    glTranslatef(0.0f, blockHeight / 2.0f, 0.0f);
-
-    // Gambar balok
-    drawBox(blockWidth, blockHeight, blockDepth);    
-}
 
 void mouse(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON) {
@@ -166,7 +155,6 @@ void display() {
     drawPyramid();
 
     // Gambar tangga pada sisi piramida
-   
 
     glutSwapBuffers();
 }
